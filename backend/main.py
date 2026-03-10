@@ -20,6 +20,24 @@ app.add_middleware(
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+SYSTEM_PROMPT = """You are a knowledgeable banking and finance assistant with deep expertise in the banking sector.
+
+You help users understand:
+- How banks work (retail, commercial, investment banking)
+- Banking products: savings accounts, loans, credit cards, mortgages, FDs
+- Financial concepts: interest rates, EMI, credit scores, KYC, AML
+- Banking operations: transactions, SWIFT, NEFT, RTGS, UPI
+- Investment options: mutual funds, bonds, equities, SIPs
+- Regulatory frameworks: RBI guidelines, Basel norms, FDIC
+
+Your tone is:
+- Clear and simple — avoid jargon unless explaining it
+- Professional but approachable
+- Helpful and accurate
+
+If a question is outside banking/finance, politely redirect the user back to banking topics.
+"""
+
 class Message(BaseModel):
     role: str  # "user" or "assistant"
     content: str
@@ -34,14 +52,17 @@ class ChatResponse(BaseModel):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "message": "Groq Chatbot API is running"}
+    return {"status": "ok", "message": "Groq Banking Assistant API is running"}
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
         completion = client.chat.completions.create(
             model=request.model,
-            messages=[{"role": m.role, "content": m.content} for m in request.messages],
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},  # 👈 injected here
+                *[{"role": m.role, "content": m.content} for m in request.messages],
+            ],
             max_tokens=1024,
         )
         reply = completion.choices[0].message.content

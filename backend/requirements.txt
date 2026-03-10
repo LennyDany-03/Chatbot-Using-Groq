@@ -1,1 +1,5 @@
-GROQ_API_KEY=
+fastapi
+uvicorn[standard]
+groq
+python-dotenv
+pydantic
