@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ;
-
+//Github
 export default function ChatPage() {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hey! I'm powered by Groq. Ask me anything ⚡" },
