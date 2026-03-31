@@ -24,7 +24,7 @@ export default function ChatPage() {
     setMessages(newMessages);
     setInput("");
     setLoading(true);
-
+//Github
     try {
       const res = await fetch(`${BACKEND_URL}/chat`, {
         method: "POST",
